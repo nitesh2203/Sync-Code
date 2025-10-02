@@ -204,11 +204,16 @@ app.post('/execute', async (req, res)=>{
 
 // Serve static files from the React app build directory
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../../client/build')));
+    const buildPath = path.join(__dirname, '../../client/build');
+    console.log('Build path:', buildPath);
+    console.log('Build directory exists:', require('fs').existsSync(buildPath));
+    
+    app.use(express.static(buildPath));
     
     // Handle React routing, return all requests to React app
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../../client/build', 'index.html'));
+        console.log('Serving React app for:', req.path);
+        res.sendFile(path.join(buildPath, 'index.html'));
     });
 }
 
