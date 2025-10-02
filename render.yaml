@@ -3,6 +3,7 @@ services:
     name: syncode-app
     env: node
     plan: free
+    nodeVersion: 18.18.0
     buildCommand: chmod +x build.sh && ./build.sh
     startCommand: npm start
     envVars:

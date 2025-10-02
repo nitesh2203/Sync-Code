@@ -13,7 +13,7 @@ cd client
 npm install
 
 # Build the client
-npm run build
+npm run build:render
 cd ..
 
 echo "Build completed successfully!"
