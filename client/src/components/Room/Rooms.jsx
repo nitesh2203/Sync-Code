@@ -14,6 +14,7 @@ const Rooms = (props) => {
 
     const checkForAuthentication = async () => {
         try {
+            console.log('Checking authentication...');
             const res = await fetch('/roomsforuser', {
                 method: "GET",
                 headers: {
@@ -23,16 +24,20 @@ const Rooms = (props) => {
                 credentials: "include"
             });
 
-            const data = await res.json();
-            setUserData(data);
-            props.setNameOfUser(data.userName);
-
-            if (!(res.status === 200)) {
-                throw new Error(res.error);
+            console.log('Authentication response status:', res.status);
+            
+            if (res.status === 200) {
+                const data = await res.json();
+                console.log('User data received:', data);
+                setUserData(data);
+                props.setNameOfUser(data.userName);
+            } else {
+                console.log('Authentication failed, redirecting to login');
+                history.push("/login");
             }
         } catch (error) {
-            console.log("NO LOGIN");
-            console.log(error);
+            console.log("Authentication error:", error);
+            console.log("Redirecting to login page");
             history.push("/login");
         }
     }
