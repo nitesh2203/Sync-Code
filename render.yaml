@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: syncode-app
+    env: node
+    plan: free
+    buildCommand: npm run install-all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: CLIENT_URL
+        value: https://syncode-app.onrender.com
+      - key: JDOODLE_URL
+        value: https://api.jdoodle.com/v1/execute
+      - key: JDOODLE_CLIENT_ID
+        value: d2415881da3e9be930d4df49b654d1ad
+      - key: JDOODLE_CLIENT_SECRET
+        value: d2dde1832b5dc0d933415442bed87bce22e550eca031ce8b587ed15975c05d42
+      - key: DATABASE
+        value: mongodb+srv://abcd1234567892203_db_user:tDKUFuu976pn7HyO@collaborative-code-edit.2snh1wr.mongodb.net/?retryWrites=true&w=majority&appName=Collaborative-Code-Editor
+      - key: SECRET_KEY
+        value: 92dead8180726c1b9bcf50ef7174ac15de669ff1b6d60ebe420b539672222b769c36772b603dc725dc9f9e6f682a8acca9a204b1c8a02ab6f1aa283213f1ffad
