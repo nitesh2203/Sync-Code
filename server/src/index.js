@@ -202,28 +202,50 @@ app.post('/execute', async (req, res)=>{
 
 // Serve static files from the React app build directory
 if (process.env.NODE_ENV === 'production') {
-    const buildPath = path.join(__dirname, '../../client/build');
-    console.log('Build path:', buildPath);
-    console.log('Build directory exists:', require('fs').existsSync(buildPath));
+    // Try different possible build paths
+    const possiblePaths = [
+        path.join(__dirname, '../../client/build'),
+        path.join(__dirname, '../client/build'),
+        path.join(process.cwd(), 'client/build'),
+        path.join(process.cwd(), 'build')
+    ];
     
-    // List files in build directory for debugging
-    try {
-        const files = require('fs').readdirSync(buildPath);
-        console.log('Files in build directory:', files);
-    } catch (err) {
-        console.log('Error reading build directory:', err.message);
+    let buildPath = null;
+    for (const testPath of possiblePaths) {
+        console.log('Testing build path:', testPath);
+        if (require('fs').existsSync(testPath)) {
+            buildPath = testPath;
+            console.log('Found build directory at:', buildPath);
+            break;
+        }
     }
     
-    app.use(express.static(buildPath));
-    
-    // Handle React routing, return all requests to React app
-    app.get('*', (req, res) => {
-        console.log('Serving React app for:', req.path);
-        const indexPath = path.join(buildPath, 'index.html');
-        console.log('Index file path:', indexPath);
-        console.log('Index file exists:', require('fs').existsSync(indexPath));
-        res.sendFile(indexPath);
-    });
+    if (buildPath) {
+        console.log('Build directory exists:', true);
+        
+        // List files in build directory for debugging
+        try {
+            const files = require('fs').readdirSync(buildPath);
+            console.log('Files in build directory:', files);
+        } catch (err) {
+            console.log('Error reading build directory:', err.message);
+        }
+        
+        app.use(express.static(buildPath));
+        
+        // Handle React routing, return all requests to React app
+        app.get('*', (req, res) => {
+            console.log('Serving React app for:', req.path);
+            const indexPath = path.join(buildPath, 'index.html');
+            console.log('Index file path:', indexPath);
+            console.log('Index file exists:', require('fs').existsSync(indexPath));
+            res.sendFile(indexPath);
+        });
+    } else {
+        console.log('Build directory not found in any of the expected locations');
+        console.log('Current working directory:', process.cwd());
+        console.log('__dirname:', __dirname);
+    }
 }
 
 console.log('Hello world from server IndexJS');
