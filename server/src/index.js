@@ -207,7 +207,9 @@ if (process.env.NODE_ENV === 'production') {
         path.join(__dirname, '../../client/build'),
         path.join(__dirname, '../client/build'),
         path.join(process.cwd(), 'client/build'),
-        path.join(process.cwd(), 'build')
+        path.join(process.cwd(), 'build'),
+        path.join(__dirname, 'client/build'),
+        path.join(__dirname, '../../build')
     ];
     
     let buildPath = null;
@@ -245,6 +247,29 @@ if (process.env.NODE_ENV === 'production') {
         console.log('Build directory not found in any of the expected locations');
         console.log('Current working directory:', process.cwd());
         console.log('__dirname:', __dirname);
+        
+        // List all files in current directory for debugging
+        try {
+            const currentDir = process.cwd();
+            const files = require('fs').readdirSync(currentDir);
+            console.log('Files in current directory:', files);
+        } catch (err) {
+            console.log('Error reading current directory:', err.message);
+        }
+        
+        // Fallback: serve a simple message
+        app.get('*', (req, res) => {
+            res.send(`
+                <html>
+                    <body>
+                        <h1>SynCode App</h1>
+                        <p>Build directory not found. Please check the deployment logs.</p>
+                        <p>Current directory: ${process.cwd()}</p>
+                        <p>__dirname: ${__dirname}</p>
+                    </body>
+                </html>
+            `);
+        });
     }
 }
 
