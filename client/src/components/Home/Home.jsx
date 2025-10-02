@@ -131,8 +131,9 @@ const Home = (props) => {
                     </div>
 
                     <p>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                     when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap 
+                    Welcome to SynCode - the ultimate collaborative coding platform! Code together in real-time with your team, 
+                    share ideas through integrated chat, and execute code instantly. Whether you're working on algorithms, 
+                    debugging together, or teaching programming concepts, SynCode makes collaborative coding seamless and fun.
                     </p>
 
                     <p className="banner-btn">
