@@ -176,9 +176,7 @@ io.on("connection", socket => {
   })
 })
 
-app.get('/', (req, res) => {
-    res.send(`Welcome`);
-});
+// Remove the root route to let React handle it
 
 app.post('/execute', async (req, res)=>{
     console.log(req.body);
@@ -208,12 +206,23 @@ if (process.env.NODE_ENV === 'production') {
     console.log('Build path:', buildPath);
     console.log('Build directory exists:', require('fs').existsSync(buildPath));
     
+    // List files in build directory for debugging
+    try {
+        const files = require('fs').readdirSync(buildPath);
+        console.log('Files in build directory:', files);
+    } catch (err) {
+        console.log('Error reading build directory:', err.message);
+    }
+    
     app.use(express.static(buildPath));
     
     // Handle React routing, return all requests to React app
     app.get('*', (req, res) => {
         console.log('Serving React app for:', req.path);
-        res.sendFile(path.join(buildPath, 'index.html'));
+        const indexPath = path.join(buildPath, 'index.html');
+        console.log('Index file path:', indexPath);
+        console.log('Index file exists:', require('fs').existsSync(indexPath));
+        res.sendFile(indexPath);
     });
 }
 
