@@ -21,9 +21,19 @@ const App = () => {
 	const [isLogout, setIsLogout] = useState('0');
 	useEffect(() => {
 		const socketUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+		console.log('Connecting to socket:', socketUrl);
 		const s = io(socketUrl);
-		console.log(s);
+		console.log('Socket created:', s);
+		console.log('Socket connected:', s.connected);
 		setSocket(s);
+		
+		s.on('connect', () => {
+			console.log('Socket connected successfully');
+		});
+		
+		s.on('disconnect', () => {
+			console.log('Socket disconnected');
+		});
 		
 		return () => {
 			s.disconnect();

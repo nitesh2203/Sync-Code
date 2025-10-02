@@ -15,13 +15,6 @@ const Rooms = (props) => {
     const checkForAuthentication = async () => {
         try {
             console.log('Checking authentication...');
-            
-            // Temporary bypass for testing - remove this after MongoDB is fixed
-            console.log('TEMPORARY: Bypassing authentication for testing');
-            setUserData({ userName: 'Test User' });
-            props.setNameOfUser('Test User');
-            return;
-            
             const res = await fetch('/roomsforuser', {
                 method: "GET",
                 headers: {
@@ -32,6 +25,7 @@ const Rooms = (props) => {
             });
 
             console.log('Authentication response status:', res.status);
+            console.log('Response headers:', res.headers);
             
             if (res.status === 200) {
                 const data = await res.json();
@@ -39,7 +33,9 @@ const Rooms = (props) => {
                 setUserData(data);
                 props.setNameOfUser(data.userName);
             } else {
-                console.log('Authentication failed, redirecting to login');
+                const errorData = await res.json();
+                console.log('Authentication failed with error:', errorData);
+                console.log('Redirecting to login');
                 history.push("/login");
             }
         } catch (error) {
@@ -57,8 +53,9 @@ const Rooms = (props) => {
       }
 
     useEffect(() => {
+        console.log('Rooms component mounted');
+        console.log('Socket available:', !!props.socket);
         checkForAuthentication();
-
     }, []);
 
     const socket = props.socket;
