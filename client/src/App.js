@@ -20,7 +20,8 @@ const App = () => {
 	// const socket = io("http://localhost:5000");
 	const [isLogout, setIsLogout] = useState('0');
 	useEffect(() => {
-		const s = io("http://localhost:5000");
+		const socketUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+		const s = io(socketUrl);
 		console.log(s);
 		setSocket(s);
 		
@@ -34,7 +35,8 @@ const App = () => {
 	useEffect(() => {
 
 		if (isDisconnected===true) {
-			const s = io("http://localhost:5000");
+			const socketUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+			const s = io(socketUrl);
 			console.log(s);
 			setSocket(s);
 			console.log("USEEFFECT")

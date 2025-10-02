@@ -45,9 +45,10 @@ const Room = (props) => {
 		const stdin = input;
 
 		try {
+			const apiUrl = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000');
 			const response = await axios({
 				method: "POST",
-				url: `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/execute`,
+				url: `${apiUrl}/execute`,
 				data: {
 					script: script,
 					language: language,
