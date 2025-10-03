@@ -217,7 +217,8 @@ if (process.env.NODE_ENV === 'production') {
         path.join(process.cwd(), 'client/build'),
         path.join(process.cwd(), 'build'),
         path.join(__dirname, 'client/build'),
-        path.join(__dirname, '../../build')
+        path.join(__dirname, '../../build'),
+        path.join(process.cwd(), 'SynCode_Project_CSN_254-master/client/build')
     ];
     
     let buildPath = null;
@@ -241,7 +242,18 @@ if (process.env.NODE_ENV === 'production') {
             console.log('Error reading build directory:', err.message);
         }
         
-        app.use(express.static(buildPath));
+        // Serve static files with proper headers
+        app.use(express.static(buildPath, {
+            maxAge: '1d',
+            etag: false,
+            setHeaders: (res, path) => {
+                if (path.endsWith('.js')) {
+                    res.setHeader('Content-Type', 'application/javascript');
+                } else if (path.endsWith('.css')) {
+                    res.setHeader('Content-Type', 'text/css');
+                }
+            }
+        }));
         
         // Handle React routing, return all requests to React app
         app.get('*', (req, res) => {
@@ -249,6 +261,7 @@ if (process.env.NODE_ENV === 'production') {
             const indexPath = path.join(buildPath, 'index.html');
             console.log('Index file path:', indexPath);
             console.log('Index file exists:', require('fs').existsSync(indexPath));
+            res.setHeader('Content-Type', 'text/html');
             res.sendFile(indexPath);
         });
     } else {
