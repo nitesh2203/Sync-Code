@@ -13,11 +13,11 @@ const Room = (props) => {
 
 
 	const getLanguageVersion = {
-		cpp17: "0", // g++ 17 GCC 9.10
-		java: "3", // JDK 11.0.4
-		python3: "3", // 3.7.4
-		go: "3", // 1.13.1
-		nodejs: "3", // 12.11.1
+		cpp17: "0", // C++ (GCC 9.1.0)
+		java: "4", // Java (JDK 1.8.0)
+		python3: "4", // Python 3.8.1
+		go: "4", // Go 1.13.5
+		nodejs: "4", // Node.js 12.14.0
 	};
 	const getLanguage = {
 		cpp: "cpp17",
@@ -44,6 +44,14 @@ const Room = (props) => {
 		const versionIndex = getLanguageVersion[language]
 		const stdin = input;
 
+		// Debug logging
+		console.log('Code execution request:', {
+			script: script,
+			language: language,
+			versionIndex: versionIndex,
+			stdin: stdin
+		});
+
 		try {
 			const apiUrl = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000');
 			const response = await axios({
@@ -62,13 +70,14 @@ const Room = (props) => {
 				const data = response.data;
 				console.log("Response data:", data);
 				
-				if (data.memory === null || data.cpu === null) {
+				// Check for compilation errors more accurately
+				if (data.memory === null || data.cpu === null || data.statusCode === 400) {
 					setisError(true);
 					enqueueSnackbar('Compilation Error', {
 						variant: "warning"
 					})
 					// Handle null output safely
-					setoutput(data.output ? data.output.substr(1) : "Compilation Error")
+					setoutput(data.output ? data.output : "Compilation Error")
 				} else {
 					setisError(false);
 					enqueueSnackbar('Code executed successfully', {

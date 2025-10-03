@@ -179,25 +179,33 @@ io.on("connection", socket => {
 // Remove the root route to let React handle it
 
 app.post('/execute', async (req, res)=>{
-    console.log(req.body);
+    console.log('Execute request:', req.body);
     const { script, language, stdin, versionIndex } = req.body;
 
-    const response = await axios({
-        method: "POST",
-        url: process.env.JDOODLE_URL,
-        data: {
-          script: script,
-          stdin: stdin,
-          language: language,
-          versionIndex: versionIndex,
-          clientId: process.env.JDOODLE_CLIENT_ID,
-          clientSecret: process.env.JDOODLE_CLIENT_SECRET
-        },
-        responseType: "json",
-      });
+    try {
+        const response = await axios({
+            method: "POST",
+            url: process.env.JDOODLE_URL,
+            data: {
+              script: script,
+              stdin: stdin,
+              language: language,
+              versionIndex: versionIndex,
+              clientId: process.env.JDOODLE_CLIENT_ID,
+              clientSecret: process.env.JDOODLE_CLIENT_SECRET
+            },
+            responseType: "json",
+          });
 
-    console.log("RESPONSE from jdoodle--->" + response.data);
-    res.json(response.data);
+        console.log("RESPONSE from jdoodle--->", response.data);
+        res.json(response.data);
+    } catch (error) {
+        console.error('JDoodle API Error:', error.message);
+        res.status(500).json({
+            error: 'Code execution failed',
+            message: error.message
+        });
+    }
 })
 
 // Serve static files from the React app build directory
